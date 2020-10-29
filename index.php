@@ -245,7 +245,7 @@ $user_name = 'Максим'; // укажите здесь ваше имя
             
             <?php foreach($popular_posts as $key => $val): ?>
             
-            <article class="popular__post post">
+            <article class="popular__post post <?= $val['type'] ?>">
                 <header class="post__header">
                     <h2><?= $val['header'] ?></h2>
                 </header>

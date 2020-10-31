@@ -11,6 +11,7 @@ $user_name = 'Максим'; // укажите здесь ваше имя
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>readme: популярное</title>
     <link rel="stylesheet" href="css/main.css">
+    
 </head>
 <body class="page">
 <div style="display: none">
@@ -203,69 +204,111 @@ $user_name = 'Максим'; // укажите здесь ваше имя
             </div>
         </div>
         <div class="popular__posts">
-            <div class="visually-hidden" id="donor">
-                <!--содержимое для поста-цитаты-->
-                <blockquote>
-                    <p>
-                        <!--здесь текст-->
-                    </p>
-                    <cite>Неизвестный Автор</cite>
-                </blockquote>
+			
+			
 
-                <!--содержимое для поста-ссылки-->
-                <div class="post-link__wrapper">
-                    <a class="post-link__external" href="http://" title="Перейти по ссылке">
-                        <div class="post-link__info-wrapper">
-                            <div class="post-link__icon-wrapper">
-                                <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
-                            </div>
-                            <div class="post-link__info">
-                                <h3><!--здесь заголовок--></h3>
-                            </div>
-                        </div>
-                        <span><!--здесь ссылка--></span>
-                    </a>
-                </div>
-
-                <!--содержимое для поста-фото-->
-                <div class="post-photo__image-wrapper">
-                    <img src="img/" alt="Фото от пользователя" width="360" height="240">
-                </div>
-
-                <!--содержимое для поста-видео-->
-                <div class="post-video__block">
-                    <div class="post-video__preview">
-                        <?=embed_youtube_cover(/* вставьте ссылку на видео */); ?>
-                        <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
-                    </div>
-                    <a href="post-details.html" class="post-video__play-big button">
-                        <svg class="post-video__play-big-icon" width="14" height="14">
-                            <use xlink:href="#icon-video-play-big"></use>
-                        </svg>
-                        <span class="visually-hidden">Запустить проигрыватель</span>
-                    </a>
-                </div>
-
-                <!--содержимое для поста-текста-->
-                <p><!--здесь текст--></p>
-            </div>
-
-            <article class="popular__post post">
+            
+			<?php
+			// создаём двумерный массив
+			$popular_posts = [
+								[	"header" 	=> "Цитата",
+									"type"		=> "post-quote",
+									"content"	=> "Мы в жизни любим только раз, а после ищем лишь похожих",
+									"username"	=> "Лариса",
+									"avatar"	=> "userpic-larisa-small.jpg"
+								],
+								[	"header" 	=> "Игра престолов",
+									"type"		=> "post-text",
+									"content"	=> "Не могу дождаться начала финального сезона своего любимого сериала!",
+									"username"	=> "Владик",
+									"avatar"	=> "userpic.jpg"
+								],
+								[	"header" 	=> "Наконец, обработал фотки!",
+									"type"		=> "post-photo",
+									"content"	=> "rock-medium.jpg",
+									"username"	=> "Виктор",
+									"avatar"	=> "userpic-mark.jpg"
+								],
+								[	"header" 	=> "Моя мечта",
+									"type"		=> "post-photo",
+									"content"	=> "coast-medium.jpg",
+									"username"	=> "Лариса",
+									"avatar"	=> "userpic-larisa-small.jpg"
+								],
+								[	"header" 	=> "Лучшие курсы",
+									"type"		=> "post-link",
+									"content"	=> "www.htmlacademy.ru",
+									"username"	=> "Владик",
+									"avatar"	=> "userpic.jpg"
+								]
+							];
+			?>
+            
+            <?php foreach($popular_posts as $key => $val): ?>
+            
+            <article class="popular__post post <?= $val['type'] ?>">
                 <header class="post__header">
-                    <h2><!--здесь заголовок--></h2>
+                    <h2><?= $val['header'] ?></h2>
                 </header>
                 <div class="post__main">
-                    <!--здесь содержимое карточки-->
+					<?php if($val['type'] === 'post-quote'): ?>
+						<!--содержимое для поста-цитаты-->
+						<blockquote>
+							<p>
+								<?= $val['content'] ?>
+							</p>
+							<cite>Неизвестный Автор</cite>
+						</blockquote>
+					<?php elseif($val['type'] === 'post-text'): ?>
+						<!--содержимое для поста-текста-->
+						<p><?= $val['content'] ?></p>
+					<?php elseif($val['type'] === 'post-photo'): ?>
+						<!--содержимое для поста-фото-->
+						<div class="post-photo__image-wrapper">
+							<img src="img/<?= $val['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+						</div>
+					<?php elseif($val['type'] === 'post-link'): ?>
+						<!--содержимое для поста-ссылки-->
+						<div class="post-link__wrapper">
+							<a class="post-link__external" href="http://" title="Перейти по ссылке">
+								<div class="post-link__info-wrapper">
+									<div class="post-link__icon-wrapper">
+										<img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
+									</div>
+									<div class="post-link__info">
+										<h3><?= $val['header'] ?></h3>
+									</div>
+								</div>
+								<span><?= $val['content'] ?></span>
+							</a>
+						</div>
+					<?php elseif($val['type'] === 'post-video'): ?>
+						<!--содержимое для поста-видео-->
+						<div class="post-video__block">
+							<div class="post-video__preview">
+								<?=embed_youtube_cover($val['content']); ?>
+								<img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+							</div>
+							<a href="post-details.html" class="post-video__play-big button">
+								<svg class="post-video__play-big-icon" width="14" height="14">
+									<use xlink:href="#icon-video-play-big"></use>
+								</svg>
+								<span class="visually-hidden">Запустить проигрыватель</span>
+							</a>
+						</div>
+						
+					<?php endif ?>
+
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
                         <a class="post__author-link" href="#" title="Автор">
                             <div class="post__avatar-wrapper">
                                 <!--укажите путь к файлу аватара-->
-                                <img class="post__author-avatar" src="img/" alt="Аватар пользователя">
+                                <img class="post__author-avatar" src="img/<?= $val['avatar'] ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><!--здесь имя пользоателя--></b>
+                                <b class="post__author-name"><?= $val['username'] ?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
@@ -293,6 +336,9 @@ $user_name = 'Максим'; // укажите здесь ваше имя
                     </div>
                 </footer>
             </article>
+            
+            <?php endforeach; ?>       
+            
         </div>
     </div>
 </section>

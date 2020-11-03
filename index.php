@@ -11,7 +11,7 @@ function short_text($text, $num_char = 300) {
 		foreach ($text_array as $key => $val) {
 			$result .= ' ' . $val;
 			$num = mb_strlen($result, 'UTF-8');
-			if ($num > $num_char) {
+			if ($num >= $num_char) {
 				return $result  . '... <a class="post-text__more-link" href="#">Читать далее</a>';
 			}
 		}

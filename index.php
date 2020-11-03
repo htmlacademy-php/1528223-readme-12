@@ -2,6 +2,23 @@
 $is_auth = rand(0, 1);
 
 $user_name = 'Максим'; // укажите здесь ваше имя
+
+// функция для сокращения текста в карточках главной страницы
+function short_text($text, $num_char = 300) {
+	if (mb_strlen($text, 'UTF-8') > $num_char) {
+		$text_array = explode(' ', $text);
+		$result = array_shift($text_array);
+		foreach ($text_array as $key => $val) {
+			$result .= ' ' . $val;
+			$num = mb_strlen($result, 'UTF-8');
+			if ($num >= $num_char) {
+				return $result  . '... <a class="post-text__more-link" href="#">Читать далее</a>';
+			}
+		}
+	}
+	return $text;	
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -204,9 +221,6 @@ $user_name = 'Максим'; // укажите здесь ваше имя
             </div>
         </div>
         <div class="popular__posts">
-			
-			
-
             
 			<?php
 			// создаём двумерный массив
@@ -219,7 +233,7 @@ $user_name = 'Максим'; // укажите здесь ваше имя
 								],
 								[	"header" 	=> "Игра престолов",
 									"type"		=> "post-text",
-									"content"	=> "Не могу дождаться начала финального сезона своего любимого сериала!",
+									"content"	=> "Примерная структура маркетингового исследования разнородно переворачивает эксклюзивный рекламный клаттер, учитывая современные тенденции. Правда, специалисты отмечают, что точечное воздействие уравновешивает медиабизнес. Организация практического взаимодействия программирует конструктивный мониторинг активности. PR усиливает диктат потребителя. Бизнес-стратегия изящно масштабирует сублимированный креатив, используя опыт предыдущих кампаний. Как предсказывают футурологи ценовая стратегия интуитивно синхронизирует конвергентный product placement.",
 									"username"	=> "Владик",
 									"avatar"	=> "userpic.jpg"
 								],
@@ -245,8 +259,9 @@ $user_name = 'Максим'; // укажите здесь ваше имя
 			?>
             
             <?php foreach($popular_posts as $key => $val): ?>
-            
+
             <article class="popular__post post <?= $val['type'] ?>">
+
                 <header class="post__header">
                     <h2><?= $val['header'] ?></h2>
                 </header>
@@ -261,7 +276,7 @@ $user_name = 'Максим'; // укажите здесь ваше имя
 						</blockquote>
 					<?php elseif($val['type'] === 'post-text'): ?>
 						<!--содержимое для поста-текста-->
-						<p><?= $val['content'] ?></p>
+						<p><?= short_text($val['content']) ?></p>
 					<?php elseif($val['type'] === 'post-photo'): ?>
 						<!--содержимое для поста-фото-->
 						<div class="post-photo__image-wrapper">

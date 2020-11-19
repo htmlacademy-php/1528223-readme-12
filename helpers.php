@@ -259,3 +259,19 @@ function generate_random_date($index)
 
     return $dt;
 }
+
+// функция для сокращения текста в карточках главной страницы
+function short_text($text, $num_char = 300) {
+	if (mb_strlen($text, 'UTF-8') > $num_char) {
+		$text_array = explode(' ', $text);
+		$result = array_shift($text_array);
+		foreach ($text_array as $key => $val) {
+			$result .= ' ' . $val;
+			$num = mb_strlen($result, 'UTF-8');
+			if ($num >= $num_char) {
+				return $result  . '... <a class="post-text__more-link" href="#">Читать далее</a>';
+			}
+		}
+	}
+	return $text;	
+}

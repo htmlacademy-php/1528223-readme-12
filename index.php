@@ -59,30 +59,12 @@ foreach ($popular_posts as $array_key => $array_value) {
 	$index += 1;
 }
 
-// обрабатываем даты в списке постов, чтобы получить дату в формате “дд.мм.гггг чч:мм” и относительную дату, затем добавляем их в массив
+// обрабатываем даты в списке постов, чтобы получить даты в нужных форматах, затем добавляем их в массив
 foreach ($popular_posts as $array_key => $array_value) {
-	foreach ($array_value as $key) {
-		// приводим даты к формату “дд.мм.гггг чч:мм”
-		$popular_posts[$array_key]['datetime_format'] = date('d.m.Y H:i', strtotime($popular_posts[$array_key]['datetime']));
-		// приводим даты к относительному виду
-		$date_diff = strtotime(date('d.m.Y H:i')) - strtotime($popular_posts[$array_key]['datetime']);
-		if (ceil($date_diff / 60) < 60) {
-			$num = ceil($date_diff / 60);
-			$popular_posts[$array_key]['datetime_relative'] = $num . ' ' . get_noun_plural_form ($num, 'минута', 'минуты', 'минут') . ' назад';
-		} elseif (ceil($date_diff / 60) >= 60 && ceil($date_diff / 60) < 60*24) {
-			$num = ceil($date_diff / (60*60));
-			$popular_posts[$array_key]['datetime_relative'] = $num . ' ' . get_noun_plural_form ($num, 'час', 'часа', 'часов') . ' назад';
-		} elseif (ceil($date_diff / 60/60) >= 24 && ceil($date_diff / 60/60) < 24*7) {
-			$num = ceil($date_diff / (60*60*24));
-			$popular_posts[$array_key]['datetime_relative'] = $num . ' ' . get_noun_plural_form ($num, 'день', 'дня', 'дней') . ' назад';
-		} elseif (ceil($date_diff / 60/60/24) >= 7 && ceil($date_diff / 60/60/24) < 7*5) {
-			$num = ceil($date_diff / (60*60*24*7));
-			$popular_posts[$array_key]['datetime_relative'] = $num . ' ' . get_noun_plural_form ($num, 'неделя', 'недели', 'недель') . ' назад';
-		} else {
-			$num = ceil($date_diff / (60*60*24*7*5));
-			$popular_posts[$array_key]['datetime_relative'] = $num . ' ' . get_noun_plural_form ($num, 'месяц', 'месяца', 'месяцев') . ' назад';
-		}
-	}
+	// приводим даты к формату “дд.мм.гггг чч:мм”
+	$popular_posts[$array_key]['datetime_format'] = datetime_format($popular_posts[$array_key]['datetime']);
+	// приводим даты к относительному виду
+	$popular_posts[$array_key]['datetime_relative'] = datetime_relative($popular_posts[$array_key]['datetime']);
 }
 
 // HTML-код главной страницы

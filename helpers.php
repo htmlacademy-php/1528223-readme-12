@@ -275,3 +275,41 @@ function short_text($text, $num_char = 300) {
 	}
 	return $text;	
 }
+
+// функция для приведения даты к формату “дд.мм.гггг чч:мм”
+function datetime_format($datetime) {
+	$datetime = date('d.m.Y H:i', strtotime($datetime));
+	return $datetime;
+}
+// функция для приведения даты к относительному виду
+function datetime_relative($datetime) {
+	$date_diff = strtotime(date('d.m.Y H:i')) - strtotime($datetime);
+	$num = ceil($date_diff / 60);			// число минут с округлением в большую сторону
+	if ($num < 60) {
+		$datetime = $num . ' ' . get_noun_plural_form ($num, 'минута', 'минуты', 'минут') . ' назад';
+		return $datetime;
+	} else {
+		$num = ceil($num / 60);				// число часов с округлением в большую сторону
+		if ($num < 24) {
+			$datetime = $num . ' ' . get_noun_plural_form ($num, 'час', 'часа', 'часов') . ' назад';
+			return $datetime;
+		} else {
+			$num = ceil($num / 24);			// число дней с округлением в большую сторону
+			if ($num < 7) {
+				$datetime = $num . ' ' . get_noun_plural_form ($num, 'день', 'дня', 'дней') . ' назад';
+				return $datetime;
+			} else {
+				$num = ceil($num / 7);		// число недель с округлением в большую сторону
+				if ($num < 5) {
+					$datetime = $num . ' ' . get_noun_plural_form ($num, 'неделя', 'недели', 'недель') . ' назад';
+					return $datetime;
+				} else {
+					// здесь считаем по-другому, тк число месяцев -- это не число недель, поделённое на 5
+					$num = date_interval_format(date_diff(date_create('now'), date_create($datetime)), "%m");
+					$datetime = $num . ' ' . get_noun_plural_form ($num, 'месяц', 'месяца', 'месяцев') . ' назад';
+					return $datetime;
+				}
+			}
+		}
+	}
+}

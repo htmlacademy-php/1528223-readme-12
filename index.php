@@ -59,14 +59,6 @@ foreach ($popular_posts as $array_key => $array_value) {
 	$index += 1;
 }
 
-// обрабатываем даты в списке постов, чтобы получить даты в нужных форматах, затем добавляем их в массив
-foreach ($popular_posts as $array_key => $array_value) {
-	// приводим даты к формату “дд.мм.гггг чч:мм”
-	$popular_posts[$array_key]['datetime_format'] = datetime_format($popular_posts[$array_key]['datetime']);
-	// приводим даты к относительному виду
-	$popular_posts[$array_key]['datetime_relative'] = datetime_relative($popular_posts[$array_key]['datetime']);
-}
-
 // HTML-код главной страницы
 $page_content = include_template('main.php', ['popular_posts' => $popular_posts]);
 

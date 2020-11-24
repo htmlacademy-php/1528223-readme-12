@@ -152,7 +152,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $val['username'] ?></b>
-                                <time class="post__time" datetime="">дата</time>
+                                <time class="post__time" datetime="<?=$val['datetime']?>" title="<?=datetime_format($val['datetime'])?>"><?=datetime_relative($val['datetime'])?></time>
                             </div>
                         </a>
                     </div>

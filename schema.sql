@@ -8,7 +8,8 @@ CREATE TABLE users(
 	dt_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	email VARCHAR(128) NOT NULL UNIQUE,
 	password VARCHAR (128),
-	avatar VARCHAR (128)
+	avatar VARCHAR (128),
+	username VARCHAR (128) -- добавил в задании 4.2
 )
 COMMENT='Таблица пользователей';
 
@@ -46,6 +47,7 @@ CREATE UNIQUE INDEX communication ON messages(sender_id, recepient_id);
 CREATE TABLE posts(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	dt_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	header VARCHAR (128), -- добавил в задании 4.2
 	text TEXT,
 	author VARCHAR(128),
 	image_url VARCHAR(128),
@@ -87,6 +89,7 @@ CREATE TABLE comments(
 	dt_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	user_id INT,
 	post_id INT,
+	content VARCHAR (128), -- добавил в задании 4.2
 	FOREIGN KEY (user_id)
 		REFERENCES users(id)
 		ON UPDATE CASCADE

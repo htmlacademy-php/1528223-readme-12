@@ -7,40 +7,45 @@ $user_name = 'Максим'; // укажите здесь ваше имя
 // подключаем файл с функциями
 include ('helpers.php');
 
-// создаём двумерный массив для списка постов
-$popular_posts = [
-		[	'header' 	=> 'Цитата',
-			'type'		=> 'post-quote',
-			'content'	=> 'Мы в жизни любим только раз, а после ищем лишь похожих',
-			'username'	=> 'Лариса',
-			'avatar'	=> 'userpic-larisa-small.jpg'
-		],
-		[	'header' 	=> 'Игра престолов',
-			'type'		=> 'post-text',
-			'content'	=> 'Примерная структура маркетингового исследования разнородно переворачивает эксклюзивный рекламный клаттер, учитывая современные тенденции. Правда, специалисты отмечают, что точечное воздействие уравновешивает медиабизнес. Организация практического взаимодействия программирует конструктивный мониторинг активности. PR усиливает диктат потребителя. Бизнес-стратегия изящно масштабирует сублимированный креатив, используя опыт предыдущих кампаний. Как предсказывают футурологи ценовая стратегия интуитивно синхронизирует конвергентный product placement.',
-			'username'	=> 'Владик',
-			'avatar'	=> 'userpic.jpg'
-		],
-		[	'header' 	=> 'Наконец, обработал фотки!',
-			'type'		=> 'post-photo',
-			'content'	=> 'rock-medium.jpg',
-			'username'	=> 'Виктор',
-			'avatar'	=> 'userpic-mark.jpg'
-		],
-		[	'header' 	=> 'Моя мечта',
-			'type'		=> 'post-photo',
-			'content'	=> 'coast-medium.jpg',
-			'username'	=> 'Лариса',
-			'avatar'	=> 'userpic-larisa-small.jpg'
-		],
-		[	'header' 	=> 'Лучшие курсы',
-			'type'		=> 'post-link',
-			'content'	=> 'www.htmlacademy.ru',
-			'username'	=> 'Владик',
-			'avatar'	=> 'userpic.jpg'
-		]
-	];
+$con = mysqli_connect('localhost', 'root', '','readme');				// 1. В сценарии главной страницы выполните подключение к MySQL.
 
+if ($con === FALSE) {
+   print('Ошибка подключения: ' . mysqli_connect_error());
+} 
+else {
+	mysqli_set_charset($con, "utf8");
+	
+	$sql = 'SELECT name, class FROM content_type';
+	$sql_content_types = mysqli_query($con, $sql);						// 2. Отправьте SQL-запрос для получения типов контента.
+	$content_types = mysqli_fetch_all($sql_content_types, MYSQLI_ASSOC);
+	
+	$sql = '
+		SELECT
+			posts.num_views as views,
+			posts.dt_add as datetime,
+			posts.header as header,
+			
+			content_type.class as type,
+			
+			users.username as username,
+			users.avatar as avatar,
+			
+			CONCAT (posts.text, posts.image_url, posts.video_url) as content,
+			
+			posts.author as author,
+			posts.site_url as url
+			
+		FROM posts
+		LEFT JOIN users
+			ON posts.user_id = users.id
+		LEFT JOIN content_type
+			ON posts.content_type_id = content_type.id
+		ORDER BY num_views DESC
+	';
+	$sql_popular_posts = mysqli_query($con, $sql);						// 3. Отправьте SQL-запрос для получения списка постов, объединенных с пользователями и отсортированный по популярности.
+	$popular_posts = mysqli_fetch_all($sql_popular_posts, MYSQLI_ASSOC);
+	
+}
 
 // защита от XSS-атак
 foreach ($popular_posts as $array_key => $array_value) {
@@ -60,7 +65,7 @@ foreach ($popular_posts as $array_key => $array_value) {
 }
 
 // HTML-код главной страницы
-$page_content = include_template('main.php', ['popular_posts' => $popular_posts]);
+$page_content = include_template('main.php', ['content_types' => $content_types, 'popular_posts' => $popular_posts]);
 
 // окончательный HTML-код
 $layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'readme: популярное', 'is_auth' => $is_auth, 'user_name' => $user_name]);

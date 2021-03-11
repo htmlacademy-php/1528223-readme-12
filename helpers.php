@@ -286,35 +286,35 @@ function datetime_relative($datetime) {
 	$date_diff = strtotime(date('d.m.Y H:i')) - strtotime($datetime);
 	$num = ceil($date_diff / 60);	// число минут с округлением в большую сторону
 	if ($num < 60) {
-		$datetime = $num . ' ' . get_noun_plural_form ($num, 'минута', 'минуты', 'минут') . ' назад';
+		$datetime = $num . ' ' . get_noun_plural_form ($num, 'минута', 'минуты', 'минут');
 		return $datetime;
 	}
 	
 	$num = ceil($num / 60);			// число часов с округлением в большую сторону
 	if ($num < 24) {
-		$datetime = $num . ' ' . get_noun_plural_form ($num, 'час', 'часа', 'часов') . ' назад';
+		$datetime = $num . ' ' . get_noun_plural_form ($num, 'час', 'часа', 'часов');
 		return $datetime;
 	}
 	
 	$num = ceil($num / 24);			// число дней с округлением в большую сторону
 	if ($num < 7) {
-		$datetime = $num . ' ' . get_noun_plural_form ($num, 'день', 'дня', 'дней') . ' назад';
+		$datetime = $num . ' ' . get_noun_plural_form ($num, 'день', 'дня', 'дней');
 		return $datetime;
 	}
 	
 	$num = ceil($num / 7);			// число недель с округлением в большую сторону
 	if ($num < 5) {
-		$datetime = $num . ' ' . get_noun_plural_form ($num, 'неделя', 'недели', 'недель') . ' назад';
+		$datetime = $num . ' ' . get_noun_plural_form ($num, 'неделя', 'недели', 'недель');
 		return $datetime;
 	}
 	
 	// число месяцев/лет
 	$num = date_interval_format(date_diff(date_create('now'), date_create($datetime)), "%y") * 12 + date_interval_format(date_diff(date_create('now'), date_create($datetime)), "%m");
 	if ($num < 12) {
-		$datetime = $num . ' ' . get_noun_plural_form ($num, 'месяц', 'месяца', 'месяцев') . ' назад';
+		$datetime = $num . ' ' . get_noun_plural_form ($num, 'месяц', 'месяца', 'месяцев');
 		return $datetime;
 	} else {
-		$datetime = date_interval_format(date_diff(date_create('now'), date_create($datetime)), "%y") . ' ' . get_noun_plural_form ($num, 'год', 'года', 'лет') . ' назад';
+		$datetime = date_interval_format(date_diff(date_create('now'), date_create($datetime)), "%y") . ' ' . get_noun_plural_form ($num, 'год', 'года', 'лет');
 		return $datetime;
 	}
 }

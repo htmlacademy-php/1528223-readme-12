@@ -77,25 +77,25 @@
                                 <ul class="header__profile-nav">
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="#">
-                          <span class="header__profile-nav-text">
-                            Мой профиль
-                          </span>
+										  <span class="header__profile-nav-text">
+											Мой профиль
+										  </span>
                                         </a>
                                     </li>
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="#">
-                          <span class="header__profile-nav-text">
-                            Сообщения
-                            <i class="header__profile-indicator">2</i>
-                          </span>
+										  <span class="header__profile-nav-text">
+											Сообщения
+											<i class="header__profile-indicator">2</i>
+										  </span>
                                         </a>
                                     </li>
 
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="#">
-                          <span class="header__profile-nav-text">
-                            Выход
-                          </span>
+										  <span class="header__profile-nav-text">
+											Выход
+										  </span>
                                         </a>
                                     </li>
                                 </ul>

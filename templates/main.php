@@ -33,18 +33,29 @@
                     </li>
                 </ul>
             </div>
+
+            <?php if($get_type == 0): // если переменная $get_type равна 0: ?>
+				<?php $active_all = ' filters__button--active'; // кнопка "все" активна ?>
+            <?php endif; ?>
+            
             <div class="popular__filters filters">
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all filters__button--active" href="#">
+                        <a class="filters__button filters__button--ellipse filters__button--all<?=$active_all?>" href="?type=0">
                             <span>Все</span>
                         </a>
                     </li>
                     
-                    <?php foreach ($content_types as $type): // 4. Используйте эти данные для показа списка постов и списка типов контента на главной странице. ?>
+                    <?php foreach ($content_types as $type): ?>
+                    
+						<?php $active_type = ''; // по умолчанию кнопки неактивны ?>
+						<?php if($type['id'] == $get_type): // если переменная $get_type равна id типа: ?>
+							<?php $active_type = ' filters__button--active'; // то эта кнопка активна ?>
+						<?php endif; ?>
+						
 						<li class="popular__filters-item filters__item">
-							<a class="filters__button filters__button--<?=$type['class']?> button" href="#">
+							<a class="filters__button filters__button--<?=$type['class']?> button<?=$active_type?>" href="?type=<?=$type['id']?>">
 								<span class="visually-hidden"><?$type['name']?></span>
 								<svg class="filters__icon" width="22" height="18">
 									<use xlink:href="#icon-filter-<?=$type['class']?>"></use>
@@ -57,12 +68,12 @@
         </div>
         <div class="popular__posts">
             
-            <?php foreach($popular_posts as $key => $val): // 4. Используйте эти данные для показа списка постов и списка типов контента на главной странице. ?>
+            <?php foreach($popular_posts as $key => $val): ?>
 
             <article class="popular__post post post-<?=$val['type']?>">
 
                 <header class="post__header">
-                    <h2><?=$val['header']?></h2>
+                    <h2><a href="post.php?id=<?=$val['id']?>"><?=$val['header']?></a></h2>
                 </header>
                 <div class="post__main">
 					<?php if($val['type'] === 'quote'): ?>
@@ -121,7 +132,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?=$val['username']?></b>
-                                <time class="post__time" datetime="<?=$val['datetime']?>" title="<?=datetime_format($val['datetime'])?>"><?=datetime_relative($val['datetime'])?></time>
+                                <time class="post__time" datetime="<?=$val['datetime']?>" title="<?=datetime_format($val['datetime'])?>"><?=datetime_relative($val['datetime'])?> назад</time>
                             </div>
                         </a>
                     </div>

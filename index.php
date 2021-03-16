@@ -7,14 +7,11 @@ $user_name = 'Максим'; // укажите здесь ваше имя
 // подключаем файл с функциями
 include ('helpers.php');
 
-$con = mysqli_connect('localhost', 'root', '','readme');				// 1. В сценарии главной страницы выполните подключение к MySQL.
+include ('mysqli_connect.php');
 
-if ($con === FALSE) {
+if (!$con) {
    print('Ошибка подключения: ' . mysqli_connect_error());
-} 
-else {
-	mysqli_set_charset($con, "utf8");
-	
+} else {
 	$sql = 'SELECT id, name, class FROM content_type';
 	$sql_content_types = mysqli_query($con, $sql);
 	$content_types = mysqli_fetch_all($sql_content_types, MYSQLI_ASSOC);

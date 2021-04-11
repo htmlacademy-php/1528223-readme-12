@@ -160,16 +160,16 @@ function check_youtube_url($url)
     $headers = get_headers('https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $id);
 
     if (!is_array($headers)) {
-        return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
+        return FALSE;
     }
 
     $err_flag = strpos($headers[0], '200') ? 200 : 404;
 
     if ($err_flag !== 200) {
-        return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
+        return TRUE;
     }
 
-    return true;
+    return TRUE;
 }
 
 /**
@@ -316,5 +316,26 @@ function datetime_relative($datetime) {
 	} else {
 		$datetime = date_interval_format(date_diff(date_create('now'), date_create($datetime)), "%y") . ' ' . get_noun_plural_form ($num, 'год', 'года', 'лет');
 		return $datetime;
+	}
+}
+
+// функция для того, чтобы текст оставался в заполненных полях при отправке данных через POST
+function getPostVal($name) {
+    return $_POST[$name] ?? "";
+}
+
+// функция для вывода подробных ошибок
+function errors_content($errors, $type, $value) {
+	foreach($errors as $key => $err_content) {
+		if($key == $type) {
+			return $err_content[$value];
+		}
+	}
+}
+
+// функция очистки полей ввода от специальных символов
+function clear_input($input) {
+	if (isset($_POST[$input]) !== FALSE) {
+		return filter_input(INPUT_POST, $input, FILTER_SANITIZE_SPECIAL_CHARS);
 	}
 }

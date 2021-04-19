@@ -23,21 +23,23 @@
                 micro blogging
             </p>
         </div>
-        <form class="header__search-form form" action="#" method="get">
-            <div class="header__search">
-                <label class="visually-hidden">Поиск</label>
-                <input class="header__search-input form__input" type="search">
-                <button class="header__search-button button" type="submit">
-                    <svg class="header__search-icon" width="18" height="18">
-                        <use xlink:href="#icon-search"></use>
-                    </svg>
-                    <span class="visually-hidden">Начать поиск</span>
-                </button>
-            </div>
-        </form>
+        <?php if($if_reg !== 1): // на странице регистрации этот блок не показываем ?>
+			<form class="header__search-form form" action="#" method="get">
+				<div class="header__search">
+					<label class="visually-hidden">Поиск</label>
+					<input class="header__search-input form__input" type="search">
+					<button class="header__search-button button" type="submit">
+						<svg class="header__search-icon" width="18" height="18">
+							<use xlink:href="#icon-search"></use>
+						</svg>
+						<span class="visually-hidden">Начать поиск</span>
+					</button>
+				</div>
+			</form>
+        <?php endif; ?>
         <div class="header__nav-wrapper">
             <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
-            <?php if ($is_auth == 1): ?>
+            <?php if ($if_reg !== 1): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
@@ -102,12 +104,24 @@
                             </div>
                         </div>
                     </li>
+                    
                     <li>
                         <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
                     </li>
+                    
                 </ul>
             </nav>
+            <?php else: ?>
+			<ul class="header__user-nav">
+			  <li class="header__authorization">
+				<a class="header__user-button header__authorization-button button" href="login.html">Вход</a>
+			  </li>
+			  <li>
+				<a class="header__user-button header__user-button--active header__register-button button">Регистрация</a>
+			  </li>
+			</ul>
             <?php endif; ?>
+            
         </div>
     </div>
 </header>

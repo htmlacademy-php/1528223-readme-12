@@ -23,7 +23,7 @@
                 micro blogging
             </p>
         </div>
-        <?php if($if_reg !== 1): // на странице регистрации этот блок не показываем ?>
+        <?php if($is_auth == 1): ?>
 			<form class="header__search-form form" action="#" method="get">
 				<div class="header__search">
 					<label class="visually-hidden">Поиск</label>
@@ -39,7 +39,7 @@
         <?php endif; ?>
         <div class="header__nav-wrapper">
             <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
-            <?php if ($if_reg !== 1): ?>
+            <?php if ($is_auth == 1): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
@@ -67,7 +67,7 @@
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <!--здесь должно быть имя пользователя-->
+                                    <?=$_SESSION['username']?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
@@ -94,7 +94,7 @@
                                     </li>
 
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="#">
+                                        <a class="header__profile-nav-link" href="/logout.php">
 										  <span class="header__profile-nav-text">
 											Выход
 										  </span>

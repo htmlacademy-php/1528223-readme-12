@@ -54,9 +54,6 @@ foreach ($popular_posts as $array_key => $array_value) {
 	}
 }
 
-// установка временной зоны по умолчанию
-date_default_timezone_set('Europe/Moscow');
-
 // добавляем случайные даты в двумерный массив списка постов с помощью функции generate_random_date
 $index = 0;
 foreach ($popular_posts as $array_key => $array_value) {

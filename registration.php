@@ -1,9 +1,13 @@
 <?php
 
+session_start();														// открываем сессию
+if (isset($_SESSION['user'])) {											// если в сессии есть переменная user, значит пользователь уже авторизован
+	header('Location: /feed.php');										// и регистрироваться ему не нужно, значит редиректим его на стартовую зареганных юзеров
+}
+
 $title = 'readmi: регистрация';
 
 $is_auth = 0;
-$if_reg = 1;
 
 include ('helpers.php');												// подключаем файл с функциями
 include ('mysqli_connect.php');											// соединяемся с БД
@@ -104,7 +108,7 @@ if (isset($_FILE['file']) AND $_FILE['file']['type'] !== 'image/jpeg' AND $_FILE
 
 // ЕСЛИ ОШИБОК В ЗАПОЛНЕНИИ НЕТ:
 
-if (count($errors) == 0) {
+if (isset($email) AND count($errors) == 0) {
 	// обрабатываем файл изображения
 	if ($_FILES['userpic-file']['name'] !== '') {
 		$file_link = $_FILES['userpic-file']['tmp_name'];
@@ -133,15 +137,15 @@ if (count($errors) == 0) {
 		print("Ошибка MySQL: " . $error);
 	}
 	
-	// редиректим на страницу поста
-	header('Location: /main.html' . $id);
+	// редиректим на страницу popular.php
+	header('Location: /feed.php');
 }
 
 // содержание страницы
 $page_content = include_template('reg.php', ['errors' => $errors]);
 
 // окончательный HTML-код
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title, 'is_auth' => $is_auth, 'if_reg' => $if_reg]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title, 'is_auth' => $is_auth]);
 
 print($layout_content);
 

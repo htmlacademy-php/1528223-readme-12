@@ -1,73 +1,52 @@
 <?php
 
-$is_auth = rand(0, 1);
-
-$user_name = 'Максим'; // укажите здесь ваше имя
-
-// подключаем файл с функциями
-include ('helpers.php');
-
-include ('mysqli_connect.php');
-
-if (!$con) {
-   print('Ошибка подключения: ' . mysqli_connect_error());
+session_start();														// открываем сессию
+if (isset($_SESSION['user'])) {											// если в сессии есть переменная user, значит пользователь уже авторизован
+	header('Location: /feed.php');										// и регистрироваться ему не нужно, значит редиректим его на стартовую зареганных юзеров
 } else {
-	$sql = 'SELECT id, name, class FROM content_type';
-	$sql_content_types = mysqli_query($con, $sql);
-	$content_types = mysqli_fetch_all($sql_content_types, MYSQLI_ASSOC);
-	
-	$get_type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_NUMBER_INT) ?? '0';
-	
-	$sql = '
-		SELECT
-			posts.num_views as views,
-			posts.dt_add as datetime,
-			posts.header as header,
+	$is_auth = 0;
+}
 
-			content_type.class as type,
-			
-			users.username as username,
-			users.avatar as avatar,
-			
-			CONCAT (posts.text, posts.image_url, posts.video_url) as content,
-			
-			posts.id as id,
-			posts.author as author,
-			posts.site_url as url
-			
-		FROM posts
-			LEFT JOIN users ON posts.user_id = users.id
-			LEFT JOIN content_type ON posts.content_type_id = content_type.id
-	';
-	if ($get_type !== '0') {
-		$sql .= ' WHERE content_type.id = ' . $get_type;
+include ('helpers.php');												// подключаем файл с функциями
+include ('mysqli_connect.php');											// соединяемся с БД
+
+$email = clear_input('login');											// чистим содержимое полей
+$password = clear_input('password');
+
+$errors = [																// создаём массив с ошибками (по умолчанию ошибок нет)
+	'email' => 0,
+	'password' => 0
+];
+
+if ($email AND $password) {												// если и логин и пароль внесены
+	if (!$con) {
+		print('Ошибка подключения: ' . mysqli_connect_error());
+	} else {
+		$sql = 'SELECT * FROM users WHERE email = "' . $email . '"'; 	// готовим запрос email к таблице users
+		$sql_row = mysqli_query($con, $sql);							// отправляем запрос
+		$check = mysqli_num_rows($sql_row);								// смотрим число найденных строк с таким логином
 	}
-	$sql .= ' ORDER BY num_views DESC';
-	$sql_popular_posts = mysqli_query($con, $sql);
-	$popular_posts = mysqli_fetch_all($sql_popular_posts, MYSQLI_ASSOC);
-}
-
-// защита от XSS-атак
-foreach ($popular_posts as $array_key => $array_value) {
-	foreach ($array_value as $key => $value) {
-		$popular_posts[$array_key][$key] = htmlspecialchars($value);
+	
+	if ($check == 0) {													// если логин не найден (количество строк равно нулю), то:
+		$errors['email'] = 1;											// записываем в массив ошибку логина
+	} else {															// если такой логин есть, то:
+		$sql_row = mysqli_fetch_assoc($sql_row);						// переводим строку mysql в ассоциативный массив
+		$hash = $sql_row['password'];									// забираем элемент хеш пароля из массива
+		$check = password_verify($password ,$hash);						// сравниваем введённый пароль и хеш пароля с помощью встроенной функции
+		if ($check == FALSE) {											// если сравнение не прошло, то:
+			$errors['password'] = 1;									// записываем в массив ошибку password
+		} else {														// если логин и пароль совпадают, то:
+			$id = $sql_row['id'];										// сохраняем id пользователя
+			$username = $sql_row['username'];							// сохраняем имя пользователя
+			session_start();											// открываем сессию
+			$_SESSION['user'] = $id;									// создаём сессию с id этого пользователя
+			$_SESSION['username'] = $username;							// создаём сессию с именем этого пользователя
+			header('Location: /feed.php');								// редиректим на главную страницу авторизованного пользователя
+		}
 	}
 }
 
-// установка временной зоны по умолчанию
-date_default_timezone_set('Europe/Moscow');
-
-// добавляем случайные даты в двумерный массив списка постов с помощью функции generate_random_date
-$index = 0;
-foreach ($popular_posts as $array_key => $array_value) {
-	$popular_posts[$array_key]['datetime'] = generate_random_date($index);
-	$index += 1;
-}
-
-$page_content = include_template('main.php', ['content_types' => $content_types, 'popular_posts' => $popular_posts, 'get_type' => $get_type]);
-
-// окончательный HTML-код
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'readme: популярное', 'is_auth' => $is_auth, 'user_name' => $user_name]);
+$layout_content = include_template('start_layout.php', ['errors' => $errors]);
 
 print($layout_content);
 

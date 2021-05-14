@@ -1,5 +1,5 @@
 <?php
 
-$page_content = 'Отправляем на 404';
+header("Location: /404.php");
 
 ?>

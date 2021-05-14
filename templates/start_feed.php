@@ -14,7 +14,7 @@
 				  <img class="post__author-avatar" src="img/userpic-elvira.jpg" alt="Аватар пользователя" width="60" height="60">
 				</div>
 				<div class="post__info">
-				  <b class="post__author-name">Эльвира Хайпулинова</b>
+				  <b class="post__author-name"><a href="#">Эльвира Хайпулинова</a></b>
 				  <span class="post__time">15 минут назад</span>
 				</div>
 			  </a>

@@ -134,3 +134,5 @@ CREATE TABLE likes(
 COMMENT='Таблица лайков';
 
 CREATE INDEX posts_likes ON likes(post_id);
+
+CREATE FULLTEXT INDEX fulltext_posts ON posts(header, text);

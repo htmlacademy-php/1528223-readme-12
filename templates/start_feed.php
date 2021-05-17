@@ -7,7 +7,133 @@
 	  <h2 class="visually-hidden">Лента</h2>
 	  <div class="feed__main-wrapper">
 		<div class="feed__wrapper">
+		  
+		  <?php foreach($posts as $key => $val): ?>
+		  
 		  <article class="feed__post post post-photo">
+			  
+			<header class="post__header post__author">
+			  <a class="post__author-link" href="profile.php?id=<?=$val['user_id']?>" title="Автор">
+				<div class="post__avatar-wrapper">
+				  <img class="post__author-avatar" src="img/userpic-<?=$val['avatar']?>" alt="Аватар пользователя" width="60" height="60">
+				</div>
+				<div class="post__info">
+				  <b class="post__author-name"><a href="profile.php?id=<?=$val['user_id']?>"><?=$val['username']?></a></b>
+				  <span class="post__time"><?=datetime_relative($val['dt_add'])?> назад</span>
+				</div>
+			  </a>
+			</header>
+			
+			<div class="post__main">
+			  <h2><a href="post.php?id=<?=$val['post_id']?>"><?=$val['header']?></a></h2>
+			
+			<?php if($val['type'] == 'text'): ?>
+
+			    <p>
+				  <?=short_text($val['text'])?>
+			    </p>
+			    <a class="post-text__more-link" href="post.php?id=<?=$val['id']?>">Читать далее</a>
+			  
+			  <?php elseif($val['type'] == 'quote'): ?>
+			  
+                <blockquote>
+                  <p>
+                    <?=$val['text']?>
+                  </p>
+                  <cite><?=$val['author']?></cite>
+                </blockquote>
+			  
+			  <?php elseif($val['type'] == 'photo'): ?>
+			  
+				<div class="post-photo__image-wrapper">
+				  <img src="img/<?=$val['image_url']?>" alt="Фото от пользователя" width="760" height="396">
+				</div>
+			  
+			  <?php elseif($val['type'] == 'video'): ?>
+			  
+                <div class="post-video__block">
+                  <div class="post-video__preview">
+                    <img src="img/coast.jpg" alt="Превью к видео" width="760" height="396">
+                  </div>
+                  <div class="post-video__control">
+                    <button class="post-video__play post-video__play--paused button button--video" type="button"><span class="visually-hidden">Запустить видео</span></button>
+                    <div class="post-video__scale-wrapper">
+                      <div class="post-video__scale">
+                        <div class="post-video__bar">
+                          <div class="post-video__toggle"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="post-video__fullscreen post-video__fullscreen--inactive button button--video" type="button"><span class="visually-hidden">Полноэкранный режим</span></button>
+                  </div>
+                  <button class="post-video__play-big button" type="button">
+                    <svg class="post-video__play-big-icon" width="27" height="28">
+                      <use xlink:href="#icon-video-play-big"></use>
+                    </svg>
+                    <span class="visually-hidden">Запустить проигрыватель</span>
+                  </button>
+                </div>
+			  
+			  <?php elseif($val['type'] == 'link'): ?>
+			  
+                <div class="post-link__wrapper">
+                  <a class="post-link__external" href="http://www.vitadental.ru" title="Перейти по ссылке">
+                    <div class="post-link__icon-wrapper">
+                      <img src="img/logo-vita.jpg" alt="Иконка">
+                    </div>
+                    <div class="post-link__info">
+                      <h3><?=$val['header']?></h3>
+                      <p><?=$val['text']?></p>
+                      <span><?=$val['site_url']?></span>
+                    </div>
+                    <svg class="post-link__arrow" width="11" height="16">
+                      <use xlink:href="#icon-arrow-right-ad"></use>
+                    </svg>
+                  </a>
+                </div>
+			  
+			  <?php endif; ?>
+			  
+			</div>
+			
+			<footer class="post__footer post__indicators">
+			  <div class="post__buttons">
+				<a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+				  <svg class="post__indicator-icon" width="20" height="17">
+					<use xlink:href="#icon-heart"></use>
+				  </svg>
+				  <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
+					<use xlink:href="#icon-heart-active"></use>
+				  </svg>
+				  <span><?=$val['count_likes']?></span>
+				  <span class="visually-hidden">количество лайков</span>
+				</a>
+				<a class="post__indicator post__indicator--comments button" href="post.php?id=<?=$val['post_id']?>" title="Комментарии">
+				  <svg class="post__indicator-icon" width="19" height="17">
+					<use xlink:href="#icon-comment"></use>
+				  </svg>
+				  <span><?=$val['count_comments']?></span>
+				  <span class="visually-hidden">количество комментариев</span>
+				</a>
+				<a class="post__indicator post__indicator--repost button" href="#" title="Репост">
+				  <svg class="post__indicator-icon" width="19" height="17">
+					<use xlink:href="#icon-repost"></use>
+				  </svg>
+				  <span>5</span>
+				  <span class="visually-hidden">количество репостов</span>
+				</a>
+			  </div>
+			</footer>
+			
+		  </article>
+		
+		  <?php endforeach; ?>
+		
+		
+		
+		<!--
+		  <article class="feed__post post post-photo">
+			  
 			<header class="post__header post__author">
 			  <a class="post__author-link" href="#" title="Автор">
 				<div class="post__avatar-wrapper">
@@ -19,12 +145,14 @@
 				</div>
 			  </a>
 			</header>
+			
 			<div class="post__main">
 			  <h2><a href="#">Наконец, обработала фотки!</a></h2>
 			  <div class="post-photo__image-wrapper">
 				<img src="img/rock.jpg" alt="Фото от пользователя" width="760" height="396">
 			  </div>
 			</div>
+			
 			<footer class="post__footer post__indicators">
 			  <div class="post__buttons">
 				<a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
@@ -53,6 +181,7 @@
 				</a>
 			  </div>
 			</footer>
+			
 		  </article>
 
 		  <article class="feed__post post post-text">
@@ -278,6 +407,9 @@
 			  </div>
 			</footer>
 		  </article>
+		  
+		  -->
+		  
 		</div>
 	  </div>
 	  <ul class="feed__filters filters">

@@ -23,6 +23,7 @@ if (!$con) {
 			posts.num_views as views,
 			posts.dt_add as datetime,
 			posts.header as header,
+			posts.user_id as user_id,
 
 			content_type.class as type,
 			
@@ -42,7 +43,25 @@ if (!$con) {
 	if ($get_type !== '0') {
 		$sql .= ' WHERE content_type.id = ' . $get_type;
 	}
-	$sql .= ' ORDER BY num_views DESC';
+	$sql .= ' ORDER BY num_views DESC LIMIT 3';
+	
+	// пагинация: сколько страниц
+	$sql_num = 'SELECT id FROM posts';
+	$sql_check = mysqli_query($con, $sql_num);
+	$num = mysqli_num_rows($sql_check);
+	$total_pages = ceil($num / 3);
+	// пагинация: на какой странице сейчас (если $_GET['page'] нет, то на первой)
+	$page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT) ?? '1';
+	$sql .= ' OFFSET ' . ($page - 1) * 3;
+	// пагинация: сразу формируем ссылки для кнопок "предыдущая.." и "следующая.."
+	$prev_link = $page - 1;
+	$next_link = $page + 1;
+	if($page == 1) {
+		$prev_link = 'none';
+	} elseif ($page == $total_pages) {
+		$next_link = 'none';
+	}
+	
 	$sql_popular_posts = mysqli_query($con, $sql);
 	$popular_posts = mysqli_fetch_all($sql_popular_posts, MYSQLI_ASSOC);
 }
@@ -61,7 +80,7 @@ foreach ($popular_posts as $array_key => $array_value) {
 	$index += 1;
 }
 
-$page_content = include_template('main.php', ['content_types' => $content_types, 'popular_posts' => $popular_posts, 'get_type' => $get_type]);
+$page_content = include_template('main.php', ['content_types' => $content_types, 'popular_posts' => $popular_posts, 'get_type' => $get_type, 'prev_link' => $prev_link, 'next_link' => $next_link]);
 
 // окончательный HTML-код
 $layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'readme: популярное', 'is_auth' => $is_auth, 'user_name' => $user_name]);

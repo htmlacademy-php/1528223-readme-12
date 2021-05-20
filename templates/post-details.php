@@ -38,21 +38,31 @@
             <span class="post__view"><?=$post['num_views']?> <?=get_noun_plural_form($post['num_views'], 'просмотр', 'просмотра', 'просмотров')?></span>
           </div>
           <div class="comments">
-            <form class="comments__form form" action="#" method="post">
+			  
+			  
+            <form class="comments__form form" action="post.php?id=<?=$post['id']?>" method="post">
               <div class="comments__my-avatar">
                 <img class="comments__picture" src="img/userpic-medium.jpg" alt="Аватар пользователя">
               </div>
-              <div class="form__input-section form__input-section--error">
-                <textarea class="comments__textarea form__textarea form__input" placeholder="Ваш комментарий"></textarea>
+              <div class="form__input-section form__input-section<?php if($errors !== ''): ?>--error<?php endif; ?>">
+                <textarea class="comments__textarea form__textarea form__input" placeholder="Ваш комментарий" name="comment"></textarea>
+                
+                <?php if($errors !== ''): ?>
+                
                 <label class="visually-hidden">Ваш комментарий</label>
                 <button class="form__error-button button" type="button">!</button>
                 <div class="form__error-text">
                   <h3 class="form__error-title">Ошибка валидации</h3>
-                  <p class="form__error-desc">Это поле обязательно к заполнению</p>
+                  <p class="form__error-desc"><?=$errors?></p>
                 </div>
+                
+                <?php endif; ?>
+                
               </div>
-              <button class="comments__submit button button--green" type="submit">Отправить</button>
+              <button class="comments__submit button button--green" type="submit" name="submit_comment">Отправить</button>
             </form>
+            
+            
             <div class="comments__list-wrapper">
               <ul class="comments__list">
 				<? if($comments !== 0): ?>

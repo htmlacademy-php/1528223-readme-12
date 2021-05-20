@@ -1,6 +1,12 @@
 <?php
 
-$is_auth = rand(0, 1);
+session_start();														// открываем сессию
+if (!isset($_SESSION['user'])) {										// если в сессии нет переменной user, значит надо сначала авторизоваться
+	header('Location: /index.php');										// поэтому редиректим на index.php
+} else {
+	$is_auth = 1;
+	$user_id = $_SESSION['user'];
+}
 
 include ('helpers.php');												// подключаем файл с функциями
 
@@ -58,7 +64,31 @@ if ($sql_post) {														// если данные из БД получен�
 	include ('goto_404.php');											// если данные из БД не получены, то 404
 }
 
-if ($post !== null) {													// если пост найден, то формируем массив с данными
+if ($post !== null) {													// если пост найден, то действуем дальше
+	
+	$errors = '';
+	if (isset($_POST['comment'])) {
+		$user_comment = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_SPECIAL_CHARS) ?? FALSE;
+		if ($user_comment == '') {
+			$errors = 'Это поле обязательно к заполнению';
+		} elseif (mb_strlen($user_comment,'UTF-8') < 4) {
+			$errors = 'Комментарий должен содержать не менее 4 символов';
+		} else {
+			$sql = '
+				INSERT INTO comments SET
+					user_id = "' . $user_id . '",
+					post_id = "' . $post['id'] . '",
+					content = "' . $user_comment . '"
+			';
+			$result = mysqli_query($con, $sql);
+			if (!$result) { 
+				$error = mysqli_error($con); 
+				print("Ошибка MySQL: " . $error);
+			}
+		}
+	}
+	
+	
 	
 	$comments = 0;
 	if ($post['comments_count'] > 0) {									// если есть комментарии к посту
@@ -79,7 +109,7 @@ if ($post !== null) {													// если пост найден, то фор
 		}
 	}
 	// вносим полученные данные в сценарий поста
-	$page_content = include_template('post-details.php', ['post' => $post, 'comments' => $comments]);
+	$page_content = include_template('post-details.php', ['post' => $post, 'errors' => $errors, 'comments' => $comments]);
 } else {
 	include ('goto_404.php');
 }

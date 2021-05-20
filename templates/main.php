@@ -125,7 +125,7 @@
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
-                        <a class="post__author-link" href="#" title="Автор">
+                        <a class="post__author-link" href="profile.php?id=<?=$val['user_id']?>" title="Автор">
                             <div class="post__avatar-wrapper">
                                 <!--укажите путь к файлу аватара-->
                                 <img class="post__author-avatar" src="img/userpic-<?=$val['avatar']?>" alt="Аватар пользователя">
@@ -162,6 +162,14 @@
             
             <?php endforeach; ?>       
             
+        </div>
+        <div class="popular__page-links">
+		  <?php if($prev_link !== 'none'):?>
+		  <a class="popular__page-link popular__page-link--prev button button--gray" href="?page=<?=$prev_link?>">Предыдущая страница</a>
+		  <?php endif; ?>
+          <?php if($next_link !== 'none'):?>
+          <a class="popular__page-link popular__page-link--next button button--gray" href="?page=<?=$next_link?>">Следующая страница</a>
+          <?php endif; ?>
         </div>
     </div>
 </section>

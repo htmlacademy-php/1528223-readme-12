@@ -281,6 +281,13 @@ function datetime_format($datetime) {
 	$datetime = date('d.m.Y H:i', strtotime($datetime));
 	return $datetime;
 }
+
+// функция для приведения даты к формату “чч:мм”
+function time_format($datetime) {
+	$datetime = date('H:i', strtotime($datetime));
+	return $datetime;
+}
+
 // функция для приведения даты к относительному виду
 function datetime_relative($datetime) {
 	$date_diff = strtotime(date('d.m.Y H:i')) - strtotime($datetime);
@@ -338,4 +345,39 @@ function clear_input($input) {
 	if (isset($_POST[$input]) !== FALSE) {
 		return filter_input(INPUT_POST, $input, FILTER_SANITIZE_SPECIAL_CHARS);
 	}
+}
+
+// функция получения ассоциативного массива из SQL-запроса
+function con_sql($con, $sql) {
+	$sql_request = mysqli_query($con, $sql);
+	if ($sql_request !== FALSE) {
+		return mysqli_fetch_all($sql_request, MYSQLI_ASSOC);
+	} else {
+		include ('all__goto_404.php');
+	}
+}
+
+// функция получения одномерного массива из SQL-запроса
+function con_sql_assoc($con, $sql) {
+	$sql_request = mysqli_query($con, $sql);
+	if ($sql_request !== FALSE) {
+		return mysqli_fetch_assoc($sql_request);
+	} else {
+		include ('all__goto_404.php');
+	}
+}
+
+// функция убирает дубли в многомерных массивах по названию столбца
+function array_unique_key($array, $key) { 
+	$tmp = $key_array = array();
+	$i = 0; 
+ 
+	foreach($array as $val) { 
+		if (!in_array($val[$key], $key_array)) { 
+			$key_array[$i] = $val[$key]; 
+			$tmp[$i] = $val;
+		} 
+		$i++;
+	} 
+	return $tmp; 
 }

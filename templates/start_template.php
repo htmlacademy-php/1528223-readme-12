@@ -47,7 +47,7 @@
           <ul class="intro__advantages-list">
             <li class="intro__advantage intro__advantage--ease">
               <p class="intro__advantage-text">
-                Есть все необходимое для&nbsp;простоты публикации
+                Есть все необходимое для простоты публикации
               </p>
             </li>
             <li class="intro__advantage intro__advantage--no-excess">
@@ -59,25 +59,25 @@
         </section>
         <section class="authorization">
           <h2 class="visually-hidden">Авторизация</h2>
-          <form class="authorization__form form" action="#" method="post">
+          <form class="authorization__form form" action="index.php" method="post">
             <div class="authorization__input-wrapper form__input-wrapper">
-			  <?php if($errors['email'] == 1): ?><div class="form__input-section form__input-section--error"><?php endif; ?>
+			  <?php if(isset($errors['email'])): ?><div class="form__input-section form__input-section--error"><?php endif; ?>
               <input class="authorization__input authorization__input--login form__input" type="text" name="login" placeholder="Логин">
               <svg class="form__input-icon" width="19" height="18">
                 <use xlink:href="#icon-input-user"></use>
               </svg>
               <label class="visually-hidden">Логин</label>
-              <?php if($errors['email'] == 1): ?></div><?php endif; ?>
+              <?php if(isset($errors['email'])): ?></div><?php endif; ?>
               <span class="form__error-label form__error-label--login">Неверный логин</span>
             </div>
             <div class="authorization__input-wrapper form__input-wrapper">
-			  <?php if($errors['password'] == 1): ?><div class="form__input-section form__input-section--error"><?php endif; ?>
+			  <?php if(isset($errors['password'])): ?><div class="form__input-section form__input-section--error"><?php endif; ?>
               <input class="authorization__input authorization__input--password form__input" type="password" name="password" placeholder="Пароль">
               <svg class="form__input-icon" width="16" height="20">
                 <use xlink:href="#icon-input-password"></use>
               </svg>
               <label class="visually-hidden">Пароль</label>
-              <?php if($errors['password'] == 1): ?></div><?php endif; ?>
+              <?php if(isset($errors['password'])): ?></div><?php endif; ?>
               <span class="form__error-label">Пароли не совпадают</span>
             </div>
             <a class="authorization__recovery" href="#">Восстановить пароль</a>
@@ -120,13 +120,13 @@
           <div class="footer__my-info">
             <ul class="footer__my-pages">
               <li class="footer__my-page footer__my-page--feed">
-                <a class="footer__page-link" href="feed.html">Моя лента</a>
+                <a class="footer__page-link" href="feed.php">Моя лента</a>
               </li>
               <li class="footer__my-page footer__my-page--popular">
-                <a class="footer__page-link" href="popular.html">Популярный контент</a>
+                <a class="footer__page-link" href="popular.php">Популярный контент</a>
               </li>
               <li class="footer__my-page footer__my-page--messages">
-                <a class="footer__page-link" href="messages.html">Личные сообщения</a>
+                <a class="footer__page-link" href="messages.php">Личные сообщения</a>
               </li>
             </ul>
             <div class="footer__copyright">

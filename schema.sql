@@ -30,6 +30,7 @@ COMMENT='Таблица типов контента';
 
 CREATE TABLE messages(
 	id INT PRIMARY KEY AUTO_INCREMENT,
+	dt_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	message TEXT,
 	sender_id INT,
 	recepient_id INT,
@@ -41,8 +42,6 @@ CREATE TABLE messages(
 		ON UPDATE CASCADE
 )
 COMMENT='Таблица личных сообщений';
-
-CREATE UNIQUE INDEX communication ON messages(sender_id, recepient_id);
 
 CREATE TABLE posts(
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -56,6 +55,8 @@ CREATE TABLE posts(
 	num_views INT,
 	user_id INT,
 	content_type_id INT,
+	repost BOOL,
+	original_author INT,
 	FOREIGN KEY (user_id)
 		REFERENCES users(id)
 		ON UPDATE CASCADE 

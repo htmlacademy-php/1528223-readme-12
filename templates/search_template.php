@@ -6,14 +6,12 @@
 	<div class="search__query-wrapper">
 	  <div class="search__query container">
 		<span>Вы искали:</span>
-		<span class="search__query-text"><?=$get_id?></span>
+		<span class="search__query-text"><?=$get_search?></span>
 	  </div>
 	</div>
 	<div class="search__results-wrapper">
 	  <div class="container">
 		<div class="search__content">
-			
-		
 			
 		<?php foreach($search as $key => $val): ?>
 		
@@ -149,7 +147,7 @@
 	<div class="search__query-wrapper">
 	  <div class="search__query container">
 		<span>Вы искали:</span>
-		<span class="search__query-text"><?=$get_id?></span>
+		<span class="search__query-text"><?=$get_search?></span>
 	  </div>
 	</div>
 	<div class="search__results-wrapper">

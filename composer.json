@@ -1,0 +1,19 @@
+{
+    "name": "htmlacademy/readmi",
+    "description": "learning",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Максим Филимонов",
+            "email": "maximfilimonov@yandex.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0"
+    }
+}

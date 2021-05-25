@@ -7,7 +7,7 @@
 	  <div class="adding-post__tabs-wrapper tabs">
 		<div class="adding-post__tabs filters">
 		  <ul class="adding-post__tabs-list filters__list tabs__list">
-			<?php foreach($types as $key => $val): ?>
+			<?php foreach($content_types as $key => $val): ?>
 				<li class="adding-post__tabs-item filters__item">
 			    <a class="adding-post__tabs-link filters__button filters__button--<?=$val['class']?> tabs__item  button <?php if($val['class'] == $active):?> filters__button--active tabs__item--active<?php endif;?>">
 				  <svg class="filters__icon" width="22" height="18">
@@ -23,7 +23,7 @@
 		
 		<div class="adding-post__tab-content">
 		
-		  <?php foreach($types as $key => $val): ?>
+		  <?php foreach($content_types as $key => $val): ?>
 			<section class="adding-post__<?=$val['class']?> tabs__content <?php if($val['class'] == $active):?>tabs__content--active<?php endif;?>">
 			<h2 class="visually-hidden">Форма добавления ссылки</h2>
 			<form class="adding-post__form form" action="add.php" method="post" enctype="multipart/form-data">

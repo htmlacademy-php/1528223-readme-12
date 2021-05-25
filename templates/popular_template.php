@@ -34,7 +34,7 @@
                 </ul>
             </div>
 
-            <?php if($get_type == 0): // если переменная $get_type равна 0: ?>
+            <?php if($get_type < 1 OR $get_type > 5): // если переменная $get_type равна 0: ?>
 				<?php $active_all = ' filters__button--active'; // кнопка "все" активна ?>
             <?php endif; ?>
             
@@ -138,21 +138,21 @@
                     </div>
                     <div class="post__indicators">
                         <div class="post__buttons">
-                            <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                            <a class="post__indicator post__indicator--likes button" href="popular.php?likepost=<?=$val['id']?>" title="Лайк">
                                 <svg class="post__indicator-icon" width="20" height="17">
                                     <use xlink:href="#icon-heart"></use>
                                 </svg>
                                 <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                     <use xlink:href="#icon-heart-active"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?=$val['likes_count']?></span>
                                 <span class="visually-hidden">количество лайков</span>
                             </a>
-                            <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+                            <a class="post__indicator post__indicator--comments button" href="post.php?id=<?=$val['id']?>" title="Комментарии">
                                 <svg class="post__indicator-icon" width="19" height="17">
                                     <use xlink:href="#icon-comment"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?=$val['comments_count']?></span>
                                 <span class="visually-hidden">количество комментариев</span>
                             </a>
                         </div>
@@ -164,10 +164,10 @@
             
         </div>
         <div class="popular__page-links">
-		  <?php if($prev_link !== 'none'):?>
+		  <?php if($prev_link !== NULL):?>
 		  <a class="popular__page-link popular__page-link--prev button button--gray" href="?page=<?=$prev_link?>">Предыдущая страница</a>
 		  <?php endif; ?>
-          <?php if($next_link !== 'none'):?>
+          <?php if($next_link !== NULL):?>
           <a class="popular__page-link popular__page-link--next button button--gray" href="?page=<?=$next_link?>">Следующая страница</a>
           <?php endif; ?>
         </div>

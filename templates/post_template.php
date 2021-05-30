@@ -6,11 +6,11 @@
       <div class="post-details__wrapper post-<?=$post['content_type']?>">
         <div class="post-details__main-block post post--details">
 		  
-		  <?php include('post__' . $post['content_type'] . '.php'); ?>
+		  <?php include('post_template__' . $post['content_type'] . '.php'); ?>
 		  
           <div class="post__indicators">
             <div class="post__buttons">
-              <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+              <a class="post__indicator post__indicator--likes button" href="post.php?id=<?=$get_id?>&likepost=<?=$get_id?>" title="Лайк">
                 <svg class="post__indicator-icon" width="20" height="17">
                   <use xlink:href="#icon-heart"></use>
                 </svg>
@@ -20,18 +20,18 @@
                 <span><?=$post['likes_count']?></span>
                 <span class="visually-hidden">количество лайков</span>
               </a>
-              <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+              <a class="post__indicator post__indicator--comments button" href="" title="Комментарии">
                 <svg class="post__indicator-icon" width="19" height="17">
                   <use xlink:href="#icon-comment"></use>
                 </svg>
                 <span><?=$post['comments_count']?></span>
                 <span class="visually-hidden">количество комментариев</span>
               </a>
-              <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
+              <a class="post__indicator post__indicator--repost button" href="profile.php?id=<?=$post['user_id']?>&repost=<?=$get_id?>" title="Репост">
                 <svg class="post__indicator-icon" width="19" height="17">
                   <use xlink:href="#icon-repost"></use>
                 </svg>
-                <span>5</span>
+                <span><?=$post['reposts_count']?></span>
                 <span class="visually-hidden">количество репостов</span>
               </a>
             </div>
@@ -41,13 +41,14 @@
 			  
 			  
             <form class="comments__form form" action="post.php?id=<?=$post['id']?>" method="post">
+              <input type="hidden" name="post_id" value="<?=$post['id']?>">
               <div class="comments__my-avatar">
-                <img class="comments__picture" src="img/userpic-medium.jpg" alt="Аватар пользователя">
+                <img class="comments__picture" src="img/userpic-<?=$_SESSION['avatar']?>" alt="Аватар пользователя">
               </div>
-              <div class="form__input-section form__input-section<?php if($errors !== ''): ?>--error<?php endif; ?>">
+              <div class="form__input-section form__input-section<?php if($errors !== NULL): ?>--error<?php endif; ?>">
                 <textarea class="comments__textarea form__textarea form__input" placeholder="Ваш комментарий" name="comment"></textarea>
                 
-                <?php if($errors !== ''): ?>
+                <?php if($errors !== NULL): ?>
                 
                 <label class="visually-hidden">Ваш комментарий</label>
                 <button class="form__error-button button" type="button">!</button>
@@ -88,10 +89,10 @@
 					<?php endforeach ?>
 				  </ul>
 				  <?php if($post['comments_count'] > 2): ?>
-					  <a class="comments__more-link" href="#">
-							<span>Показать все комментарии</span>
-							<sup class="comments__amount"><?=$post['comments_count']?></sup>
-					  </a>
+					<a class="comments__more-link" href="#">
+					  <span>Показать все комментарии</span>
+					  <sup class="comments__amount"><?=$post['comments_count']?></sup>
+					</a>
 				  <?php endif ?>
               <?php endif ?>
             </div>
@@ -105,7 +106,7 @@
               </a>
             </div>
             <div class="post-details__name-wrapper user__name-wrapper">
-              <a class="post-details__name user__name" href="#">
+              <a class="post-details__name user__name" href="profile.php?id=<?=$post['user_id']?>">
                 <span><?=$post['username']?></span>
               </a>
               <time class="post-details__time user__time" datetime="2014-03-20"><?=datetime_relative($post['user_dt'])?> на сайте</time>
@@ -121,11 +122,18 @@
               <span class="post-details__rating-text user__rating-text"><?=get_noun_plural_form($post['posts_count'], 'публикация', 'публикации', 'публикаций')?></span>
             </p>
           </div>
-          <div class="post-details__user-buttons user__buttons">
-            <button class="user__button user__button--subscription button button--main" type="button">Подписаться</button>
+          <form action="post.php?id=<?=$get_id?>" method="post">
+		  <div class="post-details__user-buttons user__buttons">
+            <?php if($subscribe === 0): ?>
+            <button class="user__button user__button--subscription button button--main" type="submit" name="subscribe">Подписаться</button>
+            <?php else: ?>
+            <button class="user__button user__button--subscription button button--quartz" type="submit" name="unsubscribe">Отписаться</button>
             <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
+            <?php endif; ?>
           </div>
-        </div>
+		  </form>
+		</div>
+		</form>
       </div>
     </section>
   </div>

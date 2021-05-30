@@ -16,14 +16,14 @@
 <header class="header">
     <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-            <a class="header__logo-link" href="main.html">
+            <a class="header__logo-link" href="feed.php">
                 <img class="header__logo" src="img/logo.svg" alt="Логотип readme" width="128" height="24">
             </a>
             <p class="header__topic">
                 micro blogging
             </p>
         </div>
-        <?php if($is_auth == 1): ?>
+        <?php if(isset($_SESSION['user']) !== FALSE): ?>
 			<form class="header__search-form form" action="search.php" method="get">
 				<div class="header__search">
 					<label class="visually-hidden">Поиск</label>
@@ -39,21 +39,21 @@
         <?php endif; ?>
         <div class="header__nav-wrapper">
             <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
-            <?php if ($is_auth == 1): ?>
+            <?php if (isset($_SESSION['user']) !== FALSE): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
-                        <a class="header__page-link header__page-link--active" title="Популярный контент">
+                        <a class="header__page-link <?php if($_SERVER['PHP_SELF'] == '/popular.php'): ?>header__page-link--active<?php endif; ?>" href="popular.php" title="Популярный контент">
                             <span class="visually-hidden">Популярный контент</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--feed">
-                        <a class="header__page-link" href="feed.html" title="Моя лента">
+                        <a class="header__page-link <?php if($_SERVER['PHP_SELF'] == '/feed.php'): ?>header__page-link--active<?php endif; ?>" href="feed.php" title="Моя лента">
                             <span class="visually-hidden">Моя лента</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--messages">
-                        <a class="header__page-link" href="messages.html" title="Личные сообщения">
+                        <a class="header__page-link <?php if($_SERVER['PHP_SELF'] == '/messages.php'): ?>header__page-link--active<?php endif; ?>" href="messages.php" title="Личные сообщения">
                             <span class="visually-hidden">Личные сообщения</span>
                         </a>
                     </li>
@@ -61,9 +61,9 @@
                 <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
                 <ul class="header__user-nav">
                     <li class="header__profile">
-                        <a class="header__profile-link" href="#">
+                        <a class="header__profile-link" href="profile.php?id=<?=$_SESSION['user']?>">
                             <div class="header__avatar-wrapper">
-                                <img class="header__profile-avatar" src="img/userpic-medium.jpg" alt="Аватар профиля">
+                                <img class="header__profile-avatar" src="img/userpic-<?=$_SESSION['avatar']?>" alt="Аватар профиля">
                             </div>
                             <div class="header__profile-name">
                                 <span>
@@ -78,7 +78,7 @@
                             <div class="header__profile-tooltip">
                                 <ul class="header__profile-nav">
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="#">
+                                        <a class="header__profile-nav-link" href="profile.php?id=<?=$_SESSION['user']?>">
 										  <span class="header__profile-nav-text">
 											Мой профиль
 										  </span>
@@ -94,7 +94,7 @@
                                     </li>
 
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="/logout.php">
+                                        <a class="header__profile-nav-link" href="../all__logout.php">
 										  <span class="header__profile-nav-text">
 											Выход
 										  </span>
@@ -106,7 +106,7 @@
                     </li>
                     
                     <li>
-                        <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
+                        <a class="header__post-button button button--transparent" href="add.php">Пост</a>
                     </li>
                     
                 </ul>
@@ -114,7 +114,7 @@
             <?php else: ?>
 			<ul class="header__user-nav">
 			  <li class="header__authorization">
-				<a class="header__user-button header__authorization-button button" href="login.html">Вход</a>
+				<a class="header__user-button header__authorization-button button" href="index.php">Вход</a>
 			  </li>
 			  <li>
 				<a class="header__user-button header__user-button--active header__register-button button">Регистрация</a>
@@ -161,13 +161,13 @@
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
                     <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="feed.html">Моя лента</a>
+                        <a class="footer__page-link" href="feed.php">Моя лента</a>
                     </li>
                     <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="popular.html">Популярный контент</a>
+                        <a class="footer__page-link" href="popular.php">Популярный контент</a>
                     </li>
                     <li class="footer__my-page footer__my-page--messages">
-                        <a class="footer__page-link" href="messages.html">Личные сообщения</a>
+                        <a class="footer__page-link" href="messages.php">Личные сообщения</a>
                     </li>
                 </ul>
                 <div class="footer__copyright">

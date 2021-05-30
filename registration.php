@@ -1,16 +1,10 @@
 <?php
 
-session_start();														// открываем сессию
-if (isset($_SESSION['user'])) {											// если в сессии есть переменная user, значит пользователь уже авторизован
-	header('Location: /feed.php');										// и регистрироваться ему не нужно, значит редиректим его на стартовую зареганных юзеров
-}
+include ('all__redirectfeed.php');										// редиректим авторизованных пользователей на feed.php (здесь же объявления $is_auth)
+include ('all__helpers.php');											// подключаем файл с функциями
+include ('all__mysqli_connect.php');									// соединяемся с БД
 
 $title = 'readmi: регистрация';
-
-$is_auth = 0;
-
-include ('helpers.php');												// подключаем файл с функциями
-include ('mysqli_connect.php');											// соединяемся с БД
 
 $required_fields = [];													// создаём массив с обязательными к заполнению полями
 if (isset($_POST['email']) !== FALSE) {
@@ -99,7 +93,10 @@ if (!empty($password) AND !empty($password_repeat)) {
 }
 
 // валидация аватарки
-if (isset($_FILE['file']) AND $_FILE['file']['type'] !== 'image/jpeg' AND $_FILE['file']['type'] !== 'image/gif' AND $_FILE['file']['type'] !== 'image/png') {
+if (isset($_FILE['file'])
+	AND $_FILE['file']['type'] !== 'image/jpeg'
+	AND $_FILE['file']['type'] !== 'image/gif'
+	AND $_FILE['file']['type'] !== 'image/png') {
 	$errors['userpic-file']['head'] = 'Фото';
 	$errors['userpic-file']['message'] = 'Неверный тип файла';
 	$errors['userpic-file']['subhead'] = 'Неверный тип';
@@ -108,8 +105,11 @@ if (isset($_FILE['file']) AND $_FILE['file']['type'] !== 'image/jpeg' AND $_FILE
 
 // ЕСЛИ ОШИБОК В ЗАПОЛНЕНИИ НЕТ:
 
-if (isset($email) AND count($errors) == 0) {
+if (isset($email)
+	AND count($errors) == 0) {
+		
 	// обрабатываем файл изображения
+	$avatar = '';
 	if ($_FILES['userpic-file']['name'] !== '') {
 		$file_link = $_FILES['userpic-file']['tmp_name'];
 		$file_name = $_FILES['userpic-file']['name'];
@@ -137,16 +137,18 @@ if (isset($email) AND count($errors) == 0) {
 		print("Ошибка MySQL: " . $error);
 	}
 	
+	// открываем сессию и передаём в неё id пользователя и его имя для плашки сверху
+	session_start();
+	$_SESSION['user'] = mysqli_insert_id($con);
+	$_SESSION['username'] = $login;
+	$_SESSION['avatar'] = $avatar;
 	// редиректим на страницу popular.php
-	header('Location: /feed.php');
+	header('Location: /popular.php');
 }
 
-// содержание страницы
-$page_content = include_template('reg.php', ['errors' => $errors]);
-
-// окончательный HTML-код
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title, 'is_auth' => $is_auth]);
-
+// БЛОГ ГЕНЕРАЦИИ ШАБЛОНА
+$page_content = include_template('registration_template.php', ['errors' => $errors]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title]);
 print($layout_content);
 
 ?>

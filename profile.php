@@ -1,24 +1,21 @@
 <?php
 
-session_start();														// открываем сессию
-if (!isset($_SESSION['user'])) {										// если в сессии нет переменной user, значит надо сначала авторизоваться
-	header('Location: /index.php');										// поэтому редиректим на index.php
-} else {
-	$is_auth = 1;
-	$user_id = $_SESSION['user'];
-}
-
-include ('helpers.php');												// подключаем файл с функциями
+include ('all__authorization.php');										// подключаем файл с авторизацией (здесь объявляется $user_id)
+include ('all__helpers.php');											// подключаем файл с функциями
 
 $title = 'readme: профиль';
+
+// БЛОК ОБРАБОТКИ GET-ЗАПРОСА
 $get_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) ?? FALSE; // если $_GET['id'] есть, то чистим
 
 if ($get_id) {															// если ?id= есть, то соединяемся с БД
-	include ('mysqli_connect.php');
+	include ('all__mysqli_connect.php');
 } else {
-	include ('goto_404.php');											// если ?id= нет, то 404
+	include ('all__goto_404.php');										// если ?id= нет, то 404
 }
 
+// БЛОК ПРОВЕРКИ СУЩЕСТВОВАНИЯ ID ПРОФИЛЯ
+$check = 0;
 if (!$con) {
 	print('Ошибка подключения: ' . mysqli_connect_error());
 } else {																// если подключение к БД прошло успешно, то проверяем есть ли пользователь с таким ID
@@ -30,58 +27,25 @@ if (!$con) {
 	$sql_check = mysqli_query($con, $sql);
 	$check = mysqli_num_rows($sql_check);
 }
-if ($check == 0) {														// если пользователя с таким ID в БД нет, то 404
-	include ('goto_404.php');
-}
-	
-// если нажата кнопка "Подписаться", то подписываем пользователя $user_id на пользователя $get_id, внося соответствующую запись в БД
-if (isset($_POST['subscribe']) !== FALSE) {
-	$sql = '
-		INSERT INTO subscribes SET
-		sourcer_id = "' . $get_id . '",
-		subscriber_id = "' . $user_id . '"
-	';
-	$result = mysqli_query($con, $sql);
-	if (!$result) { 
-		$error = mysqli_error($con); 
-		print("Ошибка MySQL: " . $error);
-	}
+if ($check === 0) {														// если пользователя с таким ID в БД нет, то 404
+	include ('all__goto_404.php');
 }
 
-// если нажата кнопка "Отписаться", то отписываем пользователя $user_id на пользователя $get_id, удаляя соответствующую запись БД
-if (isset($_POST['unsubscribe']) !== FALSE) {
-	$sql = '
-		DELETE
-		FROM subscribes
-		WHERE sourcer_id = "' . $get_id . '" AND subscriber_id = "' . $user_id . '"
-	';
-	$result = mysqli_query($con, $sql);
-	if (!$result) { 
-		$error = mysqli_error($con); 
-		print("Ошибка MySQL: " . $error);
-	}
-}
+// БЛОК ЛАЙКА
+include ('all__likes.php');												// подключаем файл для добавления лайка
 
-// проверяем подписан ли пользователь $user_id на пользователя $get_id, чтобы показать кнопку "подписаться"/"отписаться"
-$sql = '
-	SELECT sourcer_id, subscriber_id
-	FROM subscribes
-	WHERE sourcer_id = "' . $get_id . '" AND subscriber_id = "' . $user_id . '"
-';
-$sql_check = mysqli_query($con, $sql);
-$check = mysqli_num_rows($sql_check);
-if ($check > 0) {
-	$subscribe = 1;
-} else {
-	$subscribe = 0;
-}
+// БЛОК РЕПОСТА
+include ('all__repost.php');											// подключаем файл для репоста
 
-// собираем остальные данные по авторизованному пользователю
+// БЛОК ДАННЫХ ПО ПРОФИЛЮ
+$profile = [];
 $sql = '
 	SELECT
+		users.id as id,
 		users.dt_add as datetime,
 		users.avatar as avatar,
 		users.username as name,
+		users.email as email,
 		
 		COUNT(DISTINCT posts.id) as posts_count,
 		COUNT(DISTINCT subscribes.subscriber_id) as subscribers_count
@@ -95,62 +59,106 @@ $sql = '
 ';
 $sql_profile = mysqli_query($con, $sql);
 if ($sql_profile) {
-	$profile = mysqli_fetch_assoc($sql_profile);						// получаем массив с нужными данными по пользователю с $get_id
+	$profile = mysqli_fetch_assoc($sql_profile);						// получаем массив с данными пользователя с $get_id
 }
 
-// обрабатываем лайк, если он нажат
-if (isset($_GET['likepost']) !== FALSE) {
-	$likepost_id = filter_input(INPUT_GET, 'likepost', FILTER_SANITIZE_NUMBER_INT) ?? FALSE; // если $_GET['likepost'] есть, то очищаем
-	// проверяем, есть ли такой пост в БД
-	$sql = '
-		SELECT id
-		FROM posts
-		WHERE id = ' . $likepost_id;
-	$sql_check = mysqli_query($con, $sql);
-	$check = mysqli_num_rows($sql_check);
-	// если такой пост, то добавляем лайк в таблицу лайков
-	if ($check > 0) {
-		$sql = '
-			INSERT INTO likes
-			SET
-				user_id = "' . $user_id . '",
-				post_id = "' . $likepost_id . '"
-		';
-		$result = mysqli_query($con, $sql);
-		if (!$result) { 												// если не добавилось, то показываем ошибку
-			$error = mysqli_error($con); 
-			print("Ошибка MySQL: " . $error);
-		} else {														// а если нормально добавилось, то редиректим обратно
-			header('Location:' . $_SERVER['HTTP_REFERER']);
-			
-		}
-	}
-}
+// БЛОК ПОДПИСКИ
+$sourcer_id = $get_id;													// id пользователя, на которого подписываемся/отписываемся
+$sourcer_name = $profile['name'];										// имя пользователя, на которого подписываемся
+$sourcer_email = $profile['email'];										// email пользователя, на которого подписываемся
+include ('all__subscribe.php');											// подключаем файл для подписки/отписки и отправки уведомления
 
-// собираем список постов пользователя
+// БЛОК ВКЛАДКИ СО СПИСКОМ ПОСТОВ
 $sql = '
 	SELECT
-		posts.*,
+		posts.id as post_id,
+		posts.dt_add as dt_add,
+		posts.header as header,
+		posts.text as text,
+		posts.author as author,
+		posts.image_url as image_url,
+		posts.video_url as video_url,
+		posts.site_url as site_url,
+		
 		content_type.class as type,
-		COUNT(DISTINCT likes.user_id) as likes_count
+		COUNT(DISTINCT likes.user_id) as likes_count,
+		COUNT(DISTINCT p.id) as reposts_count,
+		
+		(SELECT GROUP_CONCAT(hashtags.hashtag)
+			FROM post_hashtag
+				LEFT JOIN hashtags ON post_hashtag.hashtag_id = hashtags.id
+			WHERE post_hashtag.post_id = posts.id
+		) as hashtags
+		
 	FROM posts
 		LEFT JOIN content_type ON content_type.id = posts.content_type_id
 		LEFT JOIN likes ON posts.id = likes.post_id
+		LEFT JOIN posts as p ON posts.id = p.repost
 	WHERE posts.user_id = ' . $get_id . '
 	GROUP BY
 		posts.id
+	ORDER BY dt_add DESC
 ';
-$sql_posts = mysqli_query($con, $sql);
-if ($sql_posts) {
-	$posts = mysqli_fetch_all($sql_posts, MYSQLI_ASSOC);				// получаем массив с нужными данными по пользователю с $get_id
-}
+$posts = con_sql($con, $sql);											// получаем ассоциативный массив с постами через функцию проверки
 
-// вносим полученные данные в сценарий поста
-$page_content = include_template('profile_content.php', ['get_id' => $get_id, 'profile' => $profile, 'subscribe' => $subscribe, 'posts' => $posts]);
+include ('all__hashtags.php');											// подключаем файл для формирования массива с хештегами для каждого поста (здесь объявляется $hashtags)
 
-// окончательный HTML-код
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title, 'is_auth' => $is_auth]);
+// БЛОК ВКЛАДКИ СО СПИСКОМ ЛАЙКОВ
+$sql = '
+	SELECT
+		likes.user_id as liker_post_id,
+		likes.post_id as post_id,
+		posts.user_id as author_post_id,
+		users.username as name,
+		users.avatar as avatar,
+		content_type.class as type
+	FROM likes
+		LEFT JOIN posts ON posts.id = likes.post_id
+		LEFT JOIN users ON users.id = likes.user_id
+		LEFT JOIN content_type ON content_type.id = posts.content_type_id
+	WHERE posts.user_id = "' . $get_id . '"
+';
+$likes = con_sql($con, $sql);											// получаем ассоциативный массив с лайками через функцию проверки
 
+// БЛОК ВКЛАДКИ СО СПИСКОМ ПОДПИСОК
+$sql = '
+	SELECT
+		subscribes.subscriber_id as subscriber_id,
+		users.dt_add as dt_add,
+		users.email as email,
+		users.avatar as avatar,
+		users.username as username,
+		
+		COUNT(DISTINCT posts.id) as count_posts,
+		COUNT(DISTINCT s.subscriber_id) as count_subscribes,
+		
+		(SELECT GROUP_CONCAT(subscribes.subscriber_id)
+			FROM subscribes
+			WHERE subscribes.sourcer_id = users.id
+		) as subscribers
+		
+	FROM subscribes
+		LEFT JOIN users ON users.id = subscribes.subscriber_id
+		LEFT JOIN posts ON posts.user_id = subscribes.subscriber_id
+		LEFT JOIN subscribes as s ON s.sourcer_id = subscribes.subscriber_id
+	WHERE subscribes.sourcer_id = "' . $get_id . '"
+	GROUP BY
+		users.id
+';
+$subscribes = con_sql($con, $sql);										// получаем ассоциативный массив с подписчиками через функцию проверки
+
+// БЛОК ГЕНЕРАЦИИ ШАБЛОНА
+$page_content = include_template('profile_template.php', [
+	'get_id' => $get_id,
+	'user_id' => $user_id,
+	'profile' => $profile,
+	'subscribe' => $subscribe,
+	'posts' => $posts,
+	'hashtags' => $hashtags,
+	'likes' => $likes,
+	'subscribes' => $subscribes
+]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title]);
 print($layout_content);
 
 ?>

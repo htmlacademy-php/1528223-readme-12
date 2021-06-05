@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?></title>
+    <title>readme: блог, каким он должен быть</title>
     <link rel="stylesheet" href="css/main.css">
-
 </head>
-<body class="page">
+
+<body class="page page--main">
 <div style="display: none">
     <svg xmlns="http://www.w3.org/2000/svg">
         <symbol id="icon-arrow-right-ad" viewbox="0 0 6 9">
@@ -154,142 +154,92 @@
     </svg>
 </div>
 
-<header class="header">
-    <div class="header__wrapper container">
-        <div class="header__logo-wrapper">
-            <a class="header__logo-link" href="feed.php">
-                <img class="header__logo" src="img/logo.svg" alt="Логотип readme" width="128" height="24">
+<header class="header page__header">
+    <div class="header__wrapper page__header-wrapper container">
+        <div class="header__logo-wrapper page__logo-wrapper">
+            <a class="header__logo-link header__logo-link--active">
+                <img class="header__logo" src="img/logo.svg" alt="Логотип readme" width="172" height="32">
             </a>
-            <p class="header__topic">
+            <p class="header__topic page__header-topic">
                 micro blogging
             </p>
         </div>
-<?php if (isset($_SESSION['user']) !== false) : ?>
-            <form class="header__search-form form" action="search.php" method="get">
-                <div class="header__search">
-                    <label class="visually-hidden">Поиск</label>
-                    <input class="header__search-input form__input" type="search" name="s">
-                    <button class="header__search-button button" type="submit">
-                        <svg class="header__search-icon" width="18" height="18">
-                            <use xlink:href="#icon-search"></use>
-                        </svg>
-                        <span class="visually-hidden">Начать поиск</span>
-                    </button>
-                </div>
-            </form>
-<?php endif; ?>
         <div class="header__nav-wrapper">
-            <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
-<?php if (isset($_SESSION['user']) !== false) : ?>
-                <nav class="header__nav">
-                    <ul class="header__my-nav">
-                        <li class="header__my-page header__my-page--popular">
-                            <a class="header__page-link
-    <?php if ($_SERVER['PHP_SELF'] === '/popular.php') : ?>
-                                    header__page-link--active
-    <?php endif; ?>"
-                                    href="popular.php" title="Популярный контент">
-                                <span class="visually-hidden">Популярный контент</span>
-                            </a>
-                        </li>
-                        <li class="header__my-page header__my-page--feed">
-                            <a class="header__page-link
-    <?php if ($_SERVER['PHP_SELF'] === '/feed.php') : ?>
-                                    header__page-link--active
-    <?php endif; ?>"
-                                    href="feed.php" title="Моя лента">
-                                <span class="visually-hidden">Моя лента</span>
-                            </a>
-                        </li>
-                        <li class="header__my-page header__my-page--messages">
-                            <a class="header__page-link
-    <?php if ($_SERVER['PHP_SELF'] === '/messages.php') : ?>
-                                    header__page-link--active
-    <?php endif; ?>"
-                                    href="messages.php" title="Личные сообщения">
-                                <span class="visually-hidden">Личные сообщения</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="header__user-nav">
-                        <li class="header__profile">
-        <?php $session_user = (isset($_SESSION['user'])) ? filter_var($_SESSION['user'], FILTER_SANITIZE_SPECIAL_CHARS) : false; ?>
-                            <a class="header__profile-link" href="profile.php?id=<?= $session_user ?>">
-                                <div class="header__avatar-wrapper">
-        <?php $session_avatar = (isset($_SESSION['avatar'])) ? filter_var($_SESSION['avatar'], FILTER_SANITIZE_SPECIAL_CHARS) : false; ?>
-                                    <img class="header__profile-avatar" src="img/userpic-<?= $session_avatar ?>"
-                                         alt="Аватар профиля">
-                                </div>
-                                <div class="header__profile-name">
-                                <span>
-        <?php $session_username = (isset($_SESSION['username'])) ? filter_var($_SESSION['username'], FILTER_SANITIZE_SPECIAL_CHARS) : false; ?>
-                                    <?= $session_username ?>
-                                </span>
-                                    <svg class="header__link-arrow" width="10" height="6">
-                                        <use xlink:href="#icon-arrow-right-ad"></use>
-                                    </svg>
-                                </div>
-                            </a>
-                            <div class="header__tooltip-wrapper">
-                                <div class="header__profile-tooltip">
-                                    <ul class="header__profile-nav">
-                                        <li class="header__profile-nav-item">
-                                            <a class="header__profile-nav-link"
-                                               href="profile.php?id=<?= $session_user ?>">
-                                          <span class="header__profile-nav-text">
-                                            Мой профиль
-                                          </span>
-                                            </a>
-                                        </li>
-                                        <li class="header__profile-nav-item">
-                                            <a class="header__profile-nav-link" href="#">
-                                          <span class="header__profile-nav-text">
-                                            Сообщения
-                                            <i class="header__profile-indicator">2</i>
-                                          </span>
-                                            </a>
-                                        </li>
-
-                                        <li class="header__profile-nav-item">
-                                            <a class="header__profile-nav-link" href="../includes/logout.php">
-                                          <span class="header__profile-nav-text">
-                                            Выход
-                                          </span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li>
-                            <a class="header__post-button button button--transparent" href="add.php">Пост</a>
-                        </li>
-
-                    </ul>
-                </nav>
-            <?php else : ?>
+            <nav class="header__nav">
+                <p class="header__register-slogan">
+                    Еще нет аккаунта?
+                </p>
                 <ul class="header__user-nav">
-                    <li class="header__authorization">
-                        <a class="header__user-button header__authorization-button button" href="index.php">Вход</a>
-                    </li>
                     <li>
-                        <a class="header__user-button
-                                header__user-button--active
-                                header__register-button button">
-                            Регистрация
-                        </a>
+                        <a class="header__user-button header__register-button button button--transparent"
+                           href="registration.php">Регистрация</a>
                     </li>
                 </ul>
-            <?php endif; ?>
-
+            </nav>
         </div>
     </div>
 </header>
 
-<?= $content ?>
+<main>
+    <h1 class="visually-hidden">Главная страница сайта по созданию микроблога readme</h1>
+    <div class="page__main-wrapper page__main-wrapper--intro container">
+        <section class="intro">
+            <h2 class="visually-hidden">Наши преимущества</h2>
+            <b class="intro__slogan">Блог, каким<br> он должен быть</b>
+            <ul class="intro__advantages-list">
+                <li class="intro__advantage intro__advantage--ease">
+                    <p class="intro__advantage-text">
+                        Есть все необходимое для простоты публикации
+                    </p>
+                </li>
+                <li class="intro__advantage intro__advantage--no-excess">
+                    <p class="intro__advantage-text">
+                        Нет ничего лишнего, отвлекающего от сути
+                    </p>
+                </li>
+            </ul>
+        </section>
+        <section class="authorization">
+            <h2 class="visually-hidden">Авторизация</h2>
+            <form class="authorization__form form" action="index.php" method="post">
+                <div class="authorization__input-wrapper form__input-wrapper">
+                    <?php if (isset($errors['email'])) : ?>
+                    <div class="form__input-section form__input-section--error">
+                    <?php endif; ?>
+                        <input class="authorization__input authorization__input--login form__input" type="text"
+                               name="login" placeholder="Логин" value="<?= getPostVal('login') ?>">
+                        <svg class="form__input-icon" width="19" height="18">
+                            <use xlink:href="#icon-input-user"></use>
+                        </svg>
+                        <label class="visually-hidden">Логин</label>
+                        <?php if (isset($errors['email'])) : ?>
+                    </div>
+                        <?php endif; ?>
+                    <span class="form__error-label form__error-label--login"><?= $errors['email'] ?></span>
+                </div>
+                <div class="authorization__input-wrapper form__input-wrapper">
+                    <?php if (isset($errors['password'])) : ?>
+                    <div class="form__input-section form__input-section--error">
+                    <?php endif; ?>
+                        <input class="authorization__input authorization__input--password form__input" type="password"
+                               name="password" placeholder="Пароль" value="<?= getPostVal('password') ?>">
+                        <svg class="form__input-icon" width="16" height="20">
+                            <use xlink:href="#icon-input-password"></use>
+                        </svg>
+                        <label class="visually-hidden">Пароль</label>
+                        <?php if (isset($errors['password'])) : ?>
+                    </div>
+                        <?php endif; ?>
+                    <span class="form__error-label"><?= $errors['password'] ?></span>
+                </div>
+                <a class="authorization__recovery" href="#">Восстановить пароль</a>
+                <button class="authorization__submit button button--main" type="submit" name="submit">Войти</button>
+            </form>
+        </section>
+    </div>
+</main>
 
-<footer class="footer">
+<footer class="footer footer--main">
     <div class="footer__wrapper">
         <div class="footer__container container">
             <div class="footer__site-info">
@@ -345,9 +295,5 @@
         </div>
     </div>
 </footer>
-<script src="libs/dropzone.js"></script>
-<script src="js/dropzone-settings.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>
-

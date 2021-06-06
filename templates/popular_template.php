@@ -33,7 +33,6 @@
                     </li>
                 </ul>
             </div>
-
             <div class="popular__filters filters">
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
